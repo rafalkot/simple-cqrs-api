@@ -1,0 +1,7 @@
+prooph_service_bus:
+  command_buses:
+    my_command_bus:
+      plugins:
+        - 'prooph_service_bus.handle_command_invoke_strategy'
+      router:
+        type: 'prooph_service_bus.command_bus_router'

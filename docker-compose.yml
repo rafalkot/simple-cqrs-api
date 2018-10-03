@@ -1,0 +1,53 @@
+version: '3'
+services:
+
+  mysql:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=dev
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=dev
+      - MYSQL_DATABASE=todo
+    volumes:
+      - ./vendor/prooph/pdo-event-store/scripts/mysql:/docker-entrypoint-initdb.d
+      - .data/var/lib/mysql:/var/lib/mysql
+
+  nginx:
+    image: prooph/nginx:www
+    ports:
+      - 8080:80
+      - 443:443
+      - 10081:10081
+      - 10082:10082
+    links:
+      - php:php
+    volumes:
+      - nfsmount:/var/www
+
+  php:
+    image: prooph/php:7.1-fpm
+    volumes:
+      - nfsmount:/var/www
+    depends_on:
+      - mysql
+    environment:
+      - PROOPH_ENV=development
+
+  projection_inventory_items:
+    image: prooph/php:7.1-cli
+    entrypoint: /app/docker/wait_for_sql.sh
+    volumes:
+      - nfsmount:/app
+    depends_on:
+      - mysql
+    command: php bin/console event-store:projection:run inventory_items_projection
+
+volumes:
+  nfsmount:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}"

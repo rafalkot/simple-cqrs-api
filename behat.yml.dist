@@ -1,0 +1,23 @@
+default:
+    suites:
+        default:
+            contexts:
+                - ApiContext:
+                    inventoryItems: '@SimpleCQRS\Domain\InventoryItems'
+                    eventStore: '@Prooph\EventStore\EventStore'
+                    projectionManager: '@prooph_event_store.projection_manager.inventory_projection_manager'
+                    inventoryItemReadModel: '@SimpleCQRS\Infrastructure\Projection\InventoryItem\InventoryItemReadModel'
+                    inventoryItemProjection: '@SimpleCQRS\Infrastructure\Projection\InventoryItem\InventoryItemProjection'
+
+                - Ubirak\RestApiBehatExtension\RestApiContext
+                - Ubirak\RestApiBehatExtension\Json\JsonContext
+
+    extensions:
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/bootstrap.php
+                class: SimpleCQRS\Kernel
+        Ubirak\RestApiBehatExtension\Extension:
+            rest:
+                base_url: http://nginx/
+                store_response: true

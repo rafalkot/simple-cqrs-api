@@ -1,0 +1,41 @@
+prooph_event_store:
+    stores:
+        inventory_items_store:
+            event_store: Prooph\EventStore\Pdo\MySqlEventStore
+            repositories:
+                inventory_items:
+                    repository_class: SimpleCQRS\Infrastructure\Repository\EventStoreInventoryItems
+                    aggregate_type: SimpleCQRS\Domain\InventoryItem
+                    aggregate_translator: prooph_event_sourcing.aggregate_translator
+
+    projection_managers:
+        inventory_projection_manager:
+            event_store: Prooph\EventStore\Pdo\MySqlEventStore # event store
+            connection: 'doctrine.pdo.connection'
+            projections:
+                inventory_items_projection:
+                    read_model: SimpleCQRS\Infrastructure\Projection\InventoryItem\InventoryItemReadModel
+                    projection: SimpleCQRS\Infrastructure\Projection\InventoryItem\InventoryItemProjection
+
+services:
+    Prooph\EventStore\Pdo\MySqlEventStore:
+        arguments: ['@prooph_event_store.message_factory', '@doctrine.pdo.connection', '@prooph_event_store.single_stream_strategy']
+
+    doctrine.pdo.connection:
+        class: PDO
+        factory: ['@database_connection', getWrappedConnection]
+
+    prooph_event_store.single_stream_strategy:
+        class: Prooph\EventStore\Pdo\PersistenceStrategy\MySqlSingleStreamStrategy
+
+    prooph_event_sourcing.aggregate_translator:
+        class: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
+
+    Prooph\EventStore\EventStore:
+        alias: 'Prooph\EventStore\Pdo\MySqlEventStore'
+
+    Prooph\EventStore\ReadOnlyEventStore:
+        alias: 'Prooph\EventStore\Pdo\MySqlEventStore'
+
+    Prooph\Common\Messaging\MessageFactory:
+        alias: 'prooph_service_bus.message_factory'

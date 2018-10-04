@@ -53,8 +53,6 @@ final class InventoryItemController
      *         @SWG\Items(ref=@Model(type=InventoryItemListDTO::class, groups={"full"}))
      *     )
      * )
-     *
-     * @return JsonResponse
      */
     public function getAll(): JsonResponse
     {
@@ -68,8 +66,6 @@ final class InventoryItemController
      *     description="Returns the details of inventory item",
      *     @Model(type=InventoryItemDetailsDTO::class)
      * )
-     *
-     * @return JsonResponse
      */
     public function get(string $id): JsonResponse
     {

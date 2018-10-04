@@ -15,11 +15,6 @@ final class CreateInventoryItemHandler
      */
     private $inventoryItems;
 
-    /**
-     * InventoryCommandHandler constructor.
-     *
-     * @param InventoryItems $inventoryItems
-     */
     public function __construct(InventoryItems $inventoryItems)
     {
         $this->inventoryItems = $inventoryItems;

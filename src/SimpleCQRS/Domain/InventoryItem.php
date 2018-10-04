@@ -22,9 +22,6 @@ final class InventoryItem extends AggregateRoot
     private $activated;
 
     /**
-     * @param UuidInterface $id
-     * @param string        $name
-     *
      * @return InventoryItem
      */
     public static function create(UuidInterface $id, string $name)

@@ -11,5 +11,12 @@ return PhpCsFixer\Config::create()
         'ordered_imports' => true,
         'indentation_type' => true,
         'switch_case_space' => true,
+        'ordered_class_elements' => true,
+        'array_indentation' => true,
+        'compact_nullable_typehint' => true,
+        'fully_qualified_strict_types' => true,
+        'no_superfluous_elseif' => true,
+        'no_superfluous_phpdoc_tags' => true,
+        'no_empty_comment' => true,
     ])
 ;

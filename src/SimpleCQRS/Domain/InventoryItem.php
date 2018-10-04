@@ -34,9 +34,14 @@ final class InventoryItem extends AggregateRoot
         }
 
         $instance = new self();
-        $instance->recordThat(InventoryItemCreated::occur($id->toString(), [
-            'name' => $name,
-        ]));
+        $instance->recordThat(
+            InventoryItemCreated::occur(
+                $id->toString(),
+                [
+                    'name' => $name,
+                ]
+            )
+        );
 
         return $instance;
     }
@@ -47,9 +52,14 @@ final class InventoryItem extends AggregateRoot
             throw new \InvalidArgumentException('Empty name');
         }
 
-        $this->recordThat(InventoryItemRenamed::occur($this->aggregateId(), [
-            'name' => $newName,
-        ]));
+        $this->recordThat(
+            InventoryItemRenamed::occur(
+                $this->aggregateId(),
+                [
+                    'name' => $newName,
+                ]
+            )
+        );
     }
 
     public function remove(int $count): void
@@ -58,9 +68,14 @@ final class InventoryItem extends AggregateRoot
             throw new \InvalidArgumentException('Cant remove negative count from inventory');
         }
 
-        $this->recordThat(ItemsRemovedFromInventory::occur($this->aggregateId(), [
-            'count' => $count,
-        ]));
+        $this->recordThat(
+            ItemsRemovedFromInventory::occur(
+                $this->aggregateId(),
+                [
+                    'count' => $count,
+                ]
+            )
+        );
     }
 
     public function checkIn(int $count): void
@@ -69,9 +84,14 @@ final class InventoryItem extends AggregateRoot
             throw new \InvalidArgumentException('Must have a count greater than 0 to add to inventory');
         }
 
-        $this->recordThat(ItemsCheckedInToInventory::occur($this->aggregateId(), [
-            'count' => $count,
-        ]));
+        $this->recordThat(
+            ItemsCheckedInToInventory::occur(
+                $this->aggregateId(),
+                [
+                    'count' => $count,
+                ]
+            )
+        );
     }
 
     public function deactivate(): void
@@ -95,14 +115,14 @@ final class InventoryItem extends AggregateRoot
 
     protected function apply(AggregateChanged $event): void
     {
-        switch (get_class($event)):
+        switch (get_class($event)) {
             case InventoryItemCreated::class:
                 $this->id = Uuid::fromString($event->aggregateId());
-        $this->activated = true;
-        break;
-        case InventoryItemDeactivated::class:
+                $this->activated = true;
+                break;
+            case InventoryItemDeactivated::class:
                 $this->activated = false;
-        break;
-        endswitch;
+                break;
+        }
     }
 }

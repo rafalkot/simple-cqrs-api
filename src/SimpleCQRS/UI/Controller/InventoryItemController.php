@@ -151,7 +151,7 @@ final class InventoryItemController
     }
 
     /**
-     * Method for API documentation purposes
+     * Method for API documentation purposes.
      *
      * @SWG\Post(summary="")
      * @Route(path="/{id}", methods={"POST"}, condition="false")
